@@ -1,0 +1,92 @@
+FRESH SUPABASE SETUP (new project, new accounts)
+
+Your GitHub repo (index.html on GitHub Pages) stays as-is - you only
+need to swap it back to the Supabase version and connect it to a new
+Supabase project.
+
+=====================================================
+A) Create the Supabase project
+=====================================================
+1. Go to https://supabase.com and sign in (or sign up).
+2. Dashboard -> "New Project".
+3. Give it a name, set a database password (save it somewhere safe),
+   pick a region close to you, click "Create new project".
+4. Wait a minute or two while it provisions.
+
+=====================================================
+B) Run the SQL (creates tables + rules)
+=====================================================
+1. In the left menu: "SQL Editor" -> "New query".
+2. Paste ALL of SUPABASE_FINAL.sql (included in this package).
+3. Click "Run".
+   This creates the profiles and kpi_records tables (if they don't
+   already exist), plus the same admin/employee rules as before:
+   one entry per employee per day, admin can edit/delete/clear.
+
+=====================================================
+C) Create the login accounts
+=====================================================
+1. Left menu -> "Authentication" -> "Users" -> "Add user" ->
+   "Create new user".
+2. Enter an email + password for each person who should log in
+   (the admin first, then every employee). Leave "Auto Confirm
+   User" checked so they can log in right away.
+3. After creating each user, click on them in the Users list and
+   copy their "User UID" (a long string like a1b2c3d4-...) - you
+   will need it in step D.
+
+=====================================================
+D) Create the matching "profiles" row for each user
+=====================================================
+1. Left menu -> "Table Editor" -> select the "profiles" table.
+2. Click "Insert" -> "Insert row".
+3. id = paste that user's UID from step C.
+4. full_name = their name.
+5. department = their department.
+6. role = "admin" for the one admin account, "employee" for
+   everyone else (lowercase, exact spelling).
+7. Save. Repeat for every user.
+
+=====================================================
+E) Fill in config.js
+=====================================================
+1. Left menu -> "Project Settings" (gear icon) -> "API".
+2. Copy the "Project URL" and the "anon public" key (this is what
+   the app calls SUPABASE_PUBLISHABLE_KEY).
+3. Open config.js and paste them in:
+
+   window.SUPABASE_URL = 'https://xxxxxxxx.supabase.co';
+   window.SUPABASE_PUBLISHABLE_KEY = 'your-anon-public-key';
+
+=====================================================
+F) Push to GitHub
+=====================================================
+1. Open your repository (the one you already created / installed
+   GitHub on).
+2. Open index.html -> pencil Edit icon -> Ctrl+A -> paste the
+   index.html from this package -> Commit.
+3. Open config.js -> pencil Edit icon -> Ctrl+A -> paste the
+   filled-in version from step E -> Commit.
+4. Wait for the GitHub Pages deployment (green check).
+5. Open the site and press Ctrl+F5.
+
+=====================================================
+Expected result
+=====================================================
+Admin:
+- Can enter more than one KPI for the same employee/date.
+- Can edit/delete all employees.
+- Can clear a whole month.
+- Has Monthly Excel.
+
+Employee:
+- Sees only own records.
+- Can enter only once per day.
+- Cannot edit/delete.
+- Date is automatic.
+- Success message: Thanks For Today.
+
+Included assets:
+- dalare-logo.png
+- config.js (fill in your Supabase URL + anon key from step E)
+- SUPABASE_FINAL.sql (run once in the SQL Editor, step B)
