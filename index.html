@@ -10,7 +10,14 @@
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}body.dark{--bg:#06100d;--surface:#0d1916;--surface2:#13231e;--text:#edf8f3;--muted:#9bb4aa;--line:#203b31;--shadow:0 22px 65px rgba(0,0,0,.4)}.hidden{display:none!important}
 button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;place-items:center;padding:28px;position:relative;overflow:hidden;background:radial-gradient(circle at 18% 20%,rgba(50,196,126,.16),transparent 30%),radial-gradient(circle at 82% 80%,rgba(26,155,104,.12),transparent 32%),var(--bg)}.login:before,.login:after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(50,196,126,.12);border-radius:50%;filter:blur(.2px);pointer-events:none}.login:before{left:-270px;top:-220px;box-shadow:0 0 0 70px rgba(50,196,126,.025),0 0 0 140px rgba(50,196,126,.02)}.login:after{right:-290px;bottom:-260px}
 .login-shell{width:min(1100px,100%);min-height:650px;display:grid;grid-template-columns:1.05fr .95fr;border:1px solid rgba(50,196,126,.2);border-radius:32px;overflow:hidden;background:rgba(255,255,255,.45);backdrop-filter:blur(20px);box-shadow:0 30px 100px rgba(10,40,28,.18);position:relative;z-index:1}.dark .login-shell{background:rgba(10,22,18,.7)}.login-brand{padding:54px 54px 42px;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(145deg,rgba(26,155,104,.12),transparent 55%)}.login-logo{width:min(300px,72%);filter:drop-shadow(0 18px 20px rgba(26,155,104,.18));margin-bottom:24px;animation:float 5s ease-in-out infinite}.login-brand h2{font-size:clamp(34px,5vw,58px);line-height:.95;margin:8px 0 12px;letter-spacing:-2px}.login-brand h2 span{color:var(--green)}.store-name{font-size:18px;font-weight:800;letter-spacing:.5px;color:var(--green);margin-bottom:8px}.tm-name{font-size:14px;color:var(--muted);font-weight:700}.tagline{margin-top:28px;color:var(--muted);font-size:14px;line-height:1.7}.login-features{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.feature-pill{padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:11px;font-weight:800}.login-card{padding:48px;display:flex;align-items:center}.login-box{width:100%;max-width:430px;margin:auto;padding:34px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.75);box-shadow:var(--shadow)}.dark .login-box{background:rgba(13,25,22,.82)}.login-mini-badge{display:inline-block;padding:6px 9px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--green);font-size:9px;font-weight:900;letter-spacing:.7px;margin-bottom:12px;box-shadow:0 6px 18px rgba(26,155,104,.08)}.login-box h1{margin:0 0 7px;font-size:30px}.login-box .muted{margin-bottom:22px}.field{position:relative;margin:12px 0}.field input{padding-left:42px!important}.field-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px}.login-box input,.form input,.form select,.form textarea{width:100%;padding:13px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--text);outline:none}.login-box input:focus,.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,155,104,.12)}.password-wrap{position:relative}.password-wrap input{padding-right:45px!important}.eye{position:absolute;right:8px;top:6px;border:0;background:transparent;color:var(--muted);cursor:pointer;padding:9px}.login-options{display:flex;justify-content:space-between;align-items:center;margin:12px 0 4px;font-size:12px;color:var(--muted)}.login-options label{display:flex;gap:7px;align-items:center}.login-options input{width:auto}.btn{cursor:pointer;border:0;border-radius:11px;padding:12px 16px;font-weight:800;transition:.2s}.btn:hover{transform:translateY(-1px)}.primary{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;box-shadow:0 10px 24px rgba(26,155,104,.2)}.danger{background:#fdecec;color:#c84f4f}.login .btn{width:100%;margin-top:15px}.err{color:#c84f4f;font-size:13px;margin-top:12px}.theme-switch{position:fixed;right:24px;top:22px;z-index:5;display:flex;gap:3px;padding:4px;border:1px solid var(--line);border-radius:999px;background:var(--surface);box-shadow:0 8px 25px rgba(0,0,0,.08)}.theme-switch button{border:0;background:transparent;color:var(--muted);padding:8px 12px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:800}.theme-switch button.active{background:var(--green);color:#fff}.login-footer{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:11px;color:var(--muted);z-index:2}
-.app{display:none}.side{position:fixed;left:0;top:0;width:225px;height:100vh;background:#123b30;color:#fff;padding:24px 15px;z-index:3}.side .logo{margin:0 8px 28px;display:flex;align-items:center;gap:9px}.side-logo{width:42px;height:42px;object-fit:contain;border-radius:10px;background:#e8f7f0;padding:3px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))}.side-logo-text{font-size:18px;font-weight:800;letter-spacing:.2px}.side-logo-text span{color:#fff}.side a,.side button{display:block;width:100%;text-align:left;color:#d9eee6;text-decoration:none;padding:12px;border-radius:9px;margin:5px 0;background:transparent;border:0;cursor:pointer;font-weight:600}.side a.active,.side a:hover,.side button:hover{background:#1e5b49}.main{margin-left:225px;padding:28px;max-width:1500px}.head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px}.head h1{margin:0}.brand-title{text-align:center}.brand-title .store{font-size:16px;font-weight:800;letter-spacing:.5px;margin-bottom:3px}.brand-title h1{font-size:28px}.brand-title .tm{font-size:12px;color:var(--muted);margin-top:4px}.logo-mark{width:38px;height:38px;border-radius:10px;display:inline-grid;place-items:center;background:#e8f7f0;color:#1a9b68;font-weight:900;margin-right:8px;vertical-align:middle}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card,.panel{background:var(--surface);color:var(--text);border-radius:16px;padding:20px;box-shadow:var(--shadow)}.label{font-size:12px;color:var(--muted)}.value{font-size:29px;font-weight:800;margin-top:7px}.green{color:#1a9b68}.red{color:#d85b5b}.gold{color:#bd9225}.grid{display:grid;grid-template-columns:1.7fr 1fr;gap:18px}.panel{margin-top:18px}.panel h2{font-size:18px;margin:0 0 15px}.formgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.wide{grid-column:span 2}.form label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.form textarea{min-height:42px;resize:vertical}table{width:100%;border-collapse:collapse}th,td{padding:11px 8px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}th{font-size:11px;color:var(--muted)}.tablewrap{overflow:auto}.badge{background:#e8f7f0;color:#19885d;padding:5px 8px;border-radius:20px;font-size:11px;font-weight:bold}.badge.red{background:#fdecec;color:#c84f4f}.period{background:var(--surface);border:1px solid var(--line);color:var(--text)}.period.active{background:#1a9b68;color:#fff}.rank{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.rank b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#e8f7f0;color:#19885d}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.toolbar input{width:160px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text)}.flash{background:#fff3df;color:#956b16;padding:10px;border-radius:8px;margin-bottom:15px}.userbox{font-size:12px;color:#d9eee6;margin:12px 8px 20px}.admin-only{display:none}.app-theme{position:fixed;right:25px;top:18px;z-index:10}
+.app{display:none}.side{position:fixed;left:0;top:0;width:225px;height:100vh;background:#123b30;color:#fff;padding:24px 15px;z-index:3}.side .logo{margin:0 8px 28px;display:flex;align-items:center;gap:9px}.side-logo{width:42px;height:42px;object-fit:contain;border-radius:10px;background:#e8f7f0;padding:3px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))}.side-logo-text{font-size:18px;font-weight:800;letter-spacing:.2px}.side-logo-text span{color:#fff}.side a,.side button{display:block;width:100%;text-align:left;color:#d9eee6;text-decoration:none;padding:12px;border-radius:9px;margin:5px 0;background:transparent;border:0;cursor:pointer;font-weight:600}.side a.active,.side a:hover,.side button:hover{background:#1e5b49}.main{margin-left:225px;padding:28px;max-width:1500px}.head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px}.head h1{margin:0}.brand-title{text-align:center}.brand-title .store{font-size:16px;font-weight:800;letter-spacing:.5px;margin-bottom:3px}.brand-title h1{font-size:28px}.brand-title .tm{font-size:12px;color:var(--muted);margin-top:4px}.logo-mark{width:38px;height:38px;border-radius:10px;display:inline-grid;place-items:center;background:#e8f7f0;color:#1a9b68;font-weight:900;margin-right:8px;vertical-align:middle}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card,.panel{background:var(--surface);color:var(--text);border-radius:16px;padding:20px;box-shadow:var(--shadow)}.label{font-size:12px;color:var(--muted)}.value{font-size:29px;font-weight:800;margin-top:7px}.green{color:#1a9b68}.red{color:#d85b5b}.gold{color:#bd9225}.grid{display:grid;grid-template-columns:1.7fr 1fr;gap:18px}.panel{margin-top:18px}.panel h2{font-size:18px;margin:0 0 15px}.formgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.wide{grid-column:span 2}.form label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.form textarea{min-height:42px;resize:vertical}table{width:100%;border-collapse:collapse}th,td{padding:11px 8px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}th{font-size:11px;color:var(--muted)}.tablewrap{overflow:auto}.badge{background:#e8f7f0;color:#19885d;padding:5px 8px;border-radius:20px;font-size:11px;font-weight:bold}.badge.red{background:#fdecec;color:#c84f4f}.period{background:var(--surface);border:1px solid var(--line);color:var(--text)}.period.active{background:#1a9b68;color:#fff}.top-card{animation:topGlow 2.6s ease-in-out infinite}
+@keyframes topGlow{0%,100%{box-shadow:var(--shadow)}50%{box-shadow:0 18px 55px rgba(189,146,37,.4),0 0 0 1px rgba(189,146,37,.3)}}
+.shine{background:linear-gradient(90deg,#bd9225,#f0cf5e,#bd9225);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shineMove 2.5s linear infinite}
+@keyframes shineMove{to{background-position:200% center}}
+.runner-ups{margin-top:10px;display:flex;flex-direction:column;gap:5px}
+.runner-ups .ru{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+.runner-ups .ru b{color:var(--text);font-weight:700;font-size:13px}
+.rank{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.rank b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#e8f7f0;color:#19885d}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.toolbar input{width:160px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text)}.flash{background:#fff3df;color:#956b16;padding:10px;border-radius:8px;margin-bottom:15px}.userbox{font-size:12px;color:#d9eee6;margin:12px 8px 20px}.admin-only{display:none}.app-theme{position:fixed;right:25px;top:18px;z-index:10}
 
 /* Premium 3D login enhancements */
 .login-shell{transform-style:preserve-3d;perspective:1400px}
@@ -46,7 +53,7 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <aside class="side"><div class="logo"><img src="dalare-logo.png" alt="DALARE Warehouse" class="side-logo"><div class="side-logo-text"><span>KPI</span> CASHIER</div></div><div id="userBox" class="userbox"></div><a class="active" href="#dashboard">▣ Dashboard</a><a href="#entry">▤ Data Entry</a><a href="#reports">◫ Reports</a><a href="#records">☷ Records</a><button id="logoutBtn">↪ Logout</button></aside>
 <main class="main" id="dashboard"><div class="head"><div class="brand-title"><div class="store">Dalare Warehouse</div><h1>KPI CASHIER</h1><div class="tm">TM-Dawan Ismahil Qader</div><div class="muted">Real Supabase database • Daily • Weekly • Monthly</div></div><div class="toolbar"><button id="exportBtn" class="btn primary hidden">Export to Excel</button><button id="monthlyExcelBtn" class="btn primary hidden">📊 Monthly Excel</button><div id="today" class="muted"></div></div></div>
 <div id="flash" class="flash hidden"></div>
-<section class="cards"><div class="card"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card"><div class="label">PERIOD ACCURACY</div><div id="acc" class="value green">0.0%</div></div><div class="card"><div class="label">PERIOD ERRORS</div><div id="errs" class="value red">0</div></div><div class="card" style="position:relative;overflow:hidden"><div class="label">🏆 TOP PERFORMER</div><div id="top" class="value gold">—</div><div id="topTrend" class="muted" style="margin-top:6px;font-size:12px"></div></div></section>
+<section class="cards"><div class="card"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card"><div class="label">PERIOD ACCURACY</div><div id="acc" class="value green">0.0%</div></div><div class="card"><div class="label">PERIOD ERRORS</div><div id="errs" class="value red">0</div></div><div class="card top-card" style="position:relative;overflow:hidden"><div class="label">🏆 TOP PERFORMER</div><div id="top" class="value gold shine">—</div><div id="topTrend" class="muted" style="margin-top:6px;font-size:12px"></div><div id="topRunnerUps" class="runner-ups"></div></div></section>
 <section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note"></textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
 <section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>Top 5</h2><div id="top5"></div></div></div></section>
 <section id="adminPanel" class="panel hidden" style="border:1px solid rgba(26,155,104,.35)">
@@ -176,6 +183,12 @@ function renderReport(){
      '<span style="color:#bd9225;font-weight:800">＝ Same as yesterday</span>';
  }else if($('topTrend')) $('topTrend').textContent='';
 
+ if($('topRunnerUps')){
+   $('topRunnerUps').innerHTML=[ranked[1],ranked[2]].filter(Boolean).map((x,i)=>
+     '<div class="ru"><span>'+(i===0?'🥈':'🥉')+' '+esc(x.full_name)+'</span><b>'+x.accuracy.toFixed(1)+'%</b></div>'
+   ).join('');
+ }
+
  $('reportBody').innerHTML=rows.sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items).map((x,i)=>
  '<tr><td>'+(i+1)+'</td><td><b>'+esc(x.full_name)+'</b></td><td>'+esc(x.department)+'</td><td>'+x.items.toLocaleString()+'</td><td>'+x.errors+'</td><td>'+x.error_pct.toFixed(2)+'%</td><td><b>'+x.accuracy.toFixed(1)+'%</b> '+(x.items?'<span class="badge '+(x.accuracy<95?'red':'')+'">'+(x.accuracy>=98?'Excellent':x.accuracy>=95?'Good':'Needs Review')+'</span>':'')+'</td></tr>'
  ).join('');
@@ -185,12 +198,18 @@ function renderReport(){
  ).join('')||'<div class="muted">No KPI data for this period.</div>';
 }
 $('exportBtn').onclick=()=>{
- if(currentProfile?.role!=='admin'){msg('Only Admin can export data to Excel.');return}
- const map=Object.fromEntries(profiles.map(p=>[p.id,p]));
- const data=records.map(r=>({Date:r.work_date,Employee:map[r.employee_id]?.full_name||'Unknown',Department:map[r.employee_id]?.department||'',Items:Number(r.items||0),Errors:Number(r.errors||0),'Error %':Number(r.items||0)?(Number(r.errors||0)/Number(r.items||0)*100).toFixed(2)+'%':'0.00%',Accuracy:Number(r.items||0)?((Number(r.items||0)-Number(r.errors||0))/Number(r.items||0)*100).toFixed(2)+'%':'0.00%', 'Error Type':r.error_type||'',Notes:r.notes||''}));
- const ws=XLSX.utils.json_to_sheet(data);
- const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'KPI Records');
- XLSX.writeFile(wb,'KPI-CASHIER-'+isoToday()+'.xlsx');
+ if(!isAdmin()){msg('Only Admin can export data to Excel.');return}
+ const chosen=$('reportDate')?.value||isoToday();
+ if(period==='daily'){
+   const wb=XLSX.utils.book_new();
+   XLSX.utils.book_append_sheet(wb,buildDailyReportSheet(chosen),'Daily Report');
+   XLSX.writeFile(wb,'KPI-CASHIER-Daily-'+chosen+'.xlsx');
+ }else{
+   const [start,end]=rangeFor(period,chosen);
+   const en=period==='weekly'?'Weekly':'Monthly',ku=period==='weekly'?'هەفتانە':'مانگانە';
+   const wb=buildAnalysisWorkbook(start,end,en,ku);
+   XLSX.writeFile(wb,'KPI-CASHIER-'+en+'-'+start+'_to_'+end+'.xlsx');
+ }
  msg('Excel file exported successfully.');
 };
 $('loginBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;const {error}=await sb.auth.signInWithPassword({email,password});if(error){$('loginError').textContent=error.message;return}$('loginError').textContent='';await init()};
@@ -223,34 +242,86 @@ async function editRecord(id){
 window.editRecord=editRecord;
 async function deleteRecord(id){if(!isAdmin()){msg('Only Admin can delete records.');return}if(!confirm('Delete this record?'))return;const {data:deleted,error}=await sb.from('kpi_records').delete().eq('id',id).select('id');if(error){msg('Delete failed: '+error.message);return}if(!deleted||!deleted.length){msg('Delete was blocked by Supabase permissions. Run the V9 SQL patch once.');return}msg('Record deleted.');await loadData()};window.deleteRecord=deleteRecord;
 
-function buildMonthlyWorkbook(month){
- const map=Object.fromEntries(profiles.map(p=>[p.id,p]));
- const mr=records.filter(r=>String(r.work_date||'').slice(0,7)===month);
- const grouped={};
- mr.forEach(r=>{
-   const id=r.employee_id;
-   if(!grouped[id])grouped[id]={Employee:map[id]?.full_name||'Unknown',Department:map[id]?.department||'',Items:0,Errors:0};
-   grouped[id].Items+=Number(r.items||0);grouped[id].Errors+=Number(r.errors||0);
+function cashierProfiles(){return profiles.filter(p=>String(p.role||'').trim().toLowerCase()!=='admin')}
+function buildDailyReportSheet(dateStr){
+ const dayRecords=records.filter(r=>r.work_date===dateStr);
+ const byEmp=Object.fromEntries(dayRecords.map(r=>[r.employee_id,r]));
+ const rows=cashierProfiles().map(p=>{
+   const r=byEmp[p.id];
+   return [p.full_name,r?Number(r.items||0):0,r?Number(r.errors||0):0,r?(r.notes||''):''];
  });
- const summary=Object.values(grouped).map(x=>({
-   Employee:x.Employee,Department:x.Department,'Total Items':x.Items,'Total Errors':x.Errors,
-   'Error %':x.Items?((x.Errors/x.Items)*100).toFixed(2)+'%':'0.00%',
-   'Accuracy %':x.Items?(((x.Items-x.Errors)/x.Items)*100).toFixed(2)+'%':'0.00%'
- })).sort((a,b)=>parseFloat(b['Accuracy %'])-parseFloat(a['Accuracy %'])||b['Total Items']-a['Total Items']);
- const daily=mr.map(r=>({
-   Date:r.work_date,Employee:map[r.employee_id]?.full_name||'Unknown',
-   Department:map[r.employee_id]?.department||'',Items:Number(r.items||0),Errors:Number(r.errors||0),
-   'Error Type':r.error_type||'',Notes:r.notes||''
- }));
+ const totalErrors=rows.reduce((a,r)=>a+r[2],0);
+ const aoa=[
+   ['DALARE CASHIER — DAILY REPORT ('+dateStr+')'],
+   [],
+   ['T.m/Dawan Employee Name','Daily Report (Items Prepared)','Number Of Errors','Note'],
+   ...rows,
+   ['Total Of Error','',totalErrors,'']
+ ];
+ return XLSX.utils.aoa_to_sheet(aoa);
+}
+function computeAnalysisRows(start,end){
+ return cashierProfiles().map(p=>{
+   const rr=records.filter(r=>r.employee_id===p.id&&r.work_date>=start&&r.work_date<=end);
+   const items=rr.reduce((a,r)=>a+Number(r.items||0),0);
+   const errors=rr.reduce((a,r)=>a+Number(r.errors||0),0);
+   return {name:p.full_name,items,errors,rate:items?errors/items*100:0,active:items>0};
+ });
+}
+function analysisSheetAOA(rowsData,titleText,labels){
+ const totalItems=rowsData.reduce((a,r)=>a+r.items,0);
+ const totalErrors=rowsData.reduce((a,r)=>a+r.errors,0);
+ const totalRate=totalItems?(totalErrors/totalItems*100):0;
+ const active=rowsData.filter(r=>r.active);
+ const inactiveCount=rowsData.length-active.length;
+ const best=[...rowsData].sort((a,b)=>b.items-a.items)[0];
+ const lowestActive=active.length?[...active].sort((a,b)=>a.items-b.items)[0]:null;
+ const mostErrors=[...rowsData].sort((a,b)=>b.errors-a.errors)[0];
+ const cleanest=active.length?[...active].sort((a,b)=>a.errors-b.errors)[0]:null;
+ const highestRateActive=active.length?[...active].sort((a,b)=>b.rate-a.rate)[0]:null;
+ const aoa=[
+   [titleText],
+   [],
+   labels.header,
+   ...rowsData.map(r=>[null,r.name,r.items,r.errors,r.items?r.rate.toFixed(2)+'%':'0.00%',r.active?labels.activeText:labels.inactiveText,null]),
+   [null,labels.grandTotal,totalItems,totalErrors,totalItems?totalRate.toFixed(2)+'%':'0.00%',null,null],
+   [],
+   [labels.summaryTitle],
+   [labels.stats[0],null,null,null,best?best.name+'  ('+best.items+')':'—'],
+   [labels.stats[1],null,null,null,lowestActive?lowestActive.name+'  ('+lowestActive.items+')':'—'],
+   [labels.stats[2],null,null,null,inactiveCount],
+   [labels.stats[3],null,null,null,mostErrors?mostErrors.name+'  ('+mostErrors.errors+')':'—'],
+   [labels.stats[4],null,null,null,cleanest?cleanest.name+'  ('+cleanest.errors+')':'—'],
+   [labels.stats[5],null,null,null,highestRateActive?highestRateActive.rate.toFixed(2)+'%':'0%']
+ ];
+ return XLSX.utils.aoa_to_sheet(aoa);
+}
+function buildAnalysisWorkbook(start,end,periodEn,periodKu){
+ const rowsData=computeAnalysisRows(start,end);
+ const titleEn='📊 '+periodEn+' Employee Analysis ('+start+' – '+end+')';
+ const titleKu='📊 شیکاری '+periodKu+'ی کارمەندان ('+start+' – '+end+')';
+ const wsKu=analysisSheetAOA(rowsData,titleKu,{
+   header:[null,'ناوی کارمەند','کۆی ماددەی داخڵکراو','کۆی هەڵەکان','ڕێژەی هەڵە (%)','باری چالاکی',null],
+   grandTotal:'کۆی گشتی',summaryTitle:'✨ کورتەی گشتی',
+   activeText:'✅ چالاک',inactiveText:'💤 ناچالاک',
+   stats:['🏆 باشترین کارمەند (زۆرترین ماددەی داخڵکراو):','📉 کەمترین کارمەندی چالاک (کەمترین ماددە لەنێو چالاکەکان):','💤 ژمارەی کارمەندانی بێ چالاکی (0 ماددە):','⚠️ زۆرترین هەڵەی تۆمارکراو:','🧼 پاکترین کارمەندی چالاک (کەمترین هەڵە):','🚨 بەرزترین ڕێژەی هەڵە لەنێو چالاکەکان:']
+ });
+ const wsEn=analysisSheetAOA(rowsData,titleEn,{
+   header:[null,'Employee Name','Total Items Entered','Total Errors','Error Rate (%)','Status',null],
+   grandTotal:'Grand Total',summaryTitle:'✨ Summary',
+   activeText:'✅ Active',inactiveText:'💤 Inactive',
+   stats:['🏆 Best Employee (most items entered):','📉 Lowest Active Employee (fewest items among active):','💤 Number of Inactive Employees (0 items):','⚠️ Most Errors Recorded:','🧼 Cleanest Active Employee (fewest errors):','🚨 Highest Error Rate Among Active:']
+ });
  const wb=XLSX.utils.book_new();
- XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(summary),'Monthly Report');
- XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(daily),'Daily Records');
+ XLSX.utils.book_append_sheet(wb,wsKu,'شیکاری');
+ XLSX.utils.book_append_sheet(wb,wsEn,'Analysis');
  return wb;
 }
 function generateMonthlyExcel(){
  if(!isAdmin()){msg('Only Admin can generate Monthly Excel.');return}
  const month=$('adminMonth').value||isoToday().slice(0,7);
- XLSX.writeFile(buildMonthlyWorkbook(month),'KPI-CASHIER-Monthly-'+month+'.xlsx');
+ const [start,end]=rangeFor('monthly',month+'-01');
+ XLSX.writeFile(buildAnalysisWorkbook(start,end,'Monthly','مانگانە'),'KPI-CASHIER-Monthly-'+month+'.xlsx');
  msg('Monthly Excel created successfully.');
 }
 async function clearMonthlyData(){
