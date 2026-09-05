@@ -61,7 +61,7 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <main class="main" id="dashboard"><div class="head"><div class="brand-title"><div class="store">Dalare Warehouse</div><h1>KPI CASHIER</h1><div class="tm">TM-Dawan Ismahil Qader</div><div class="muted">Real Supabase database • Daily • Weekly • Monthly</div></div><div class="toolbar"><button id="exportBtn" class="btn primary hidden">Export to Excel</button><button id="monthlyExcelBtn" class="btn primary hidden">📊 Monthly Excel</button><div id="today" class="muted"></div></div></div>
 <div id="flash" class="flash hidden"></div>
 <section class="cards"><div class="card glow-brand"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card glow-green"><div class="label">TEAM ITEMS</div><div id="acc" class="value green">0</div><div id="accSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card glow-red"><div class="label">TEAM ERRORS</div><div id="errs" class="value red">0</div><div id="errsSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card top-card" style="position:relative;overflow:hidden"><div class="label">🏆 TOP PERFORMER</div><div id="top" class="value gold shine">—</div><div id="topTrend" class="muted" style="margin-top:6px;font-size:12px"></div><div id="topRunnerUps" class="runner-ups"></div></div></section>
-<section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note"></textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
+<section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note">يَا أَيُّهَا الَّذِينَ آمَنُوا لَا تَخُونُوا اللَّهَ وَالرَّسُولَ وَتَخُونُوا أَمَانَاتِكُمْ وَأَنتُمْ تَعْلَمُونَ</textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
 <section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>Top 5</h2><div id="top5"></div></div></div></section>
 <section id="adminPanel" class="panel hidden" style="border:1px solid rgba(26,155,104,.35)">
 <h2>👑 Admin Control Center</h2>
@@ -165,32 +165,33 @@ function renderRecords(){
 async function renderReport(){
  const chosen=$('reportDate').value||isoToday();
  const [start,end]=rangeFor(period,chosen);
- const map=Object.fromEntries(profiles.map(p=>[p.id,p]));
- const visibleProfiles=isAdmin()?profiles:profiles.filter(p=>p.id===currentUser.id);
- const rows=visibleProfiles.map(p=>{
-   const rr=records.filter(r=>r.employee_id===p.id&&r.work_date>=start&&r.work_date<=end);
-   const items=rr.reduce((a,r)=>a+Number(r.items||0),0);
-   const errors=rr.reduce((a,r)=>a+Number(r.errors||0),0);
-   return {...p,items,errors,error_pct:items?errors/items*100:0,accuracy:items?(items-errors)/items*100:0};
- });
+ let rows;
+ if(isAdmin()){
+   rows=cashierProfiles().map(p=>{
+     const rr=records.filter(r=>r.employee_id===p.id&&r.work_date>=start&&r.work_date<=end);
+     const items=rr.reduce((a,r)=>a+Number(r.items||0),0);
+     const errors=rr.reduce((a,r)=>a+Number(r.errors||0),0);
+     return {...p,items,errors,error_pct:items?errors/items*100:0,accuracy:items?(items-errors)/items*100:0};
+   });
+ }else{
+   const {data,error}=await sb.rpc('team_leaderboard',{p_start:start,p_end:end});
+   if(error){msg('Report: '+error.message);rows=[]}
+   else rows=(data||[]).map(x=>{
+     const items=Number(x.items||0),errors=Number(x.errors||0);
+     return {id:x.employee_id,full_name:x.full_name,department:x.department,items,errors,error_pct:items?errors/items*100:0,accuracy:items?(items-errors)/items*100:0};
+   });
+ }
  const ranked=rows.filter(x=>x.items>0).sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items);
  const ti=rows.reduce((a,r)=>a+r.items,0),te=rows.reduce((a,r)=>a+r.errors,0);
- let teamItems=ti,teamErrors=te;
- if(!isAdmin()){
-   try{
-     const {data,error}=await sb.rpc('team_totals',{p_start:start,p_end:end});
-     if(!error&&data&&data[0]){teamItems=Number(data[0].total_items||0);teamErrors=Number(data[0].total_errors||0)}
-   }catch(e){}
- }
  const myRow=rows.find(r=>r.id===currentUser.id);
- $('acc').textContent=teamItems.toLocaleString();
+ $('acc').textContent=ti.toLocaleString();
  $('accSub').textContent=myRow?'Your items: '+myRow.items.toLocaleString()+' • '+myRow.accuracy.toFixed(1)+'% accuracy':'';
- $('errs').textContent=teamErrors;
+ $('errs').textContent=te;
  $('errsSub').textContent=myRow?'Your errors: '+myRow.errors:'';
  $('top').textContent=ranked[0]?ranked[0].full_name.split(' ')[0]:'—';
  $('meta').textContent=period.toUpperCase()+' • '+start+' → '+end+' • '+ti.toLocaleString()+' items';
 
- if(ranked[0]&&period==='daily'){
+ if(ranked[0]&&period==='daily'&&ranked[0].id===currentUser.id){
    const prev=addDays(chosen,-1);
    const prevItems=records.filter(r=>r.employee_id===ranked[0].id&&r.work_date===prev).reduce((a,r)=>a+Number(r.items||0),0);
    const diff=ranked[0].items-prevItems;
@@ -198,6 +199,8 @@ async function renderReport(){
      diff>0?'<span style="color:#1a9b68;font-weight:800">▲ '+diff.toLocaleString()+' items vs yesterday</span>':
      diff<0?'<span style="color:#d85b5b;font-weight:800">▼ '+Math.abs(diff).toLocaleString()+' items vs yesterday</span>':
      '<span style="color:#bd9225;font-weight:800">＝ Same as yesterday</span>';
+ }else if(ranked[0]&&$('topTrend')){
+   $('topTrend').innerHTML='<span style="color:#bd9225;font-weight:800">🏆 Team Top Performer</span>';
  }else if($('topTrend')) $('topTrend').textContent='';
 
  if($('topRunnerUps')){
