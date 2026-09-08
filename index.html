@@ -60,8 +60,8 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <aside class="side"><div class="logo"><img src="dalare-logo.png" alt="DALARE Warehouse" class="side-logo"><div class="side-logo-text"><span>KPI</span> CASHIER</div></div><div id="userBox" class="userbox"></div><a class="active" href="#dashboard">▣ Dashboard</a><a href="#entry">▤ Data Entry</a><a href="#reports">◫ Reports</a><a href="#records">☷ Records</a><button id="logoutBtn">↪ Logout</button></aside>
 <main class="main" id="dashboard"><div class="head"><div class="brand-title"><div class="store">Dalare Warehouse</div><h1>KPI CASHIER</h1><div class="tm">TM-Dawan Ismahil Qader</div><div class="muted"></div></div><div class="toolbar"><button id="exportBtn" class="btn primary hidden">Export to Excel</button><button id="monthlyExcelBtn" class="btn primary hidden">📊 Monthly Excel</button><div id="today" class="muted"></div></div></div>
 <div id="flash" class="flash hidden"></div>
-<section class="cards"><div class="card glow-brand"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card glow-green"><div class="label">TEAM ITEMS</div><div id="acc" class="value green">0</div><div id="accSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card glow-red"><div class="label">TEAM ERRORS</div><div id="errs" class="value red">0</div><div id="errsSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card top-card" style="position:relative;overflow:hidden"><div class="label">🏆 TOP PERFORMER</div><div id="top" class="value gold shine">—</div><div id="topTrend" class="muted" style="margin-top:6px;font-size:12px"></div><div id="topRunnerUps" class="runner-ups"></div></div></section>
-<section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note">يَا أَيُّهَا الَّذِينَ آمَنُوا لَا تَخُونُوا اللَّهَ وَالرَّسُولَ وَتَخُونُوا أَمَانَاتِكُمْ وَأَنتُمْ تَعْلَمُونَ</textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
+<section class="cards"><div class="card glow-brand"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card glow-green"><div class="label">TEAM ITEMS</div><div id="acc" class="value green">0</div><div id="accSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card glow-red"><div class="label">TEAM ERRORS</div><div id="errs" class="value red">0</div><div id="errsSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card top-card" style="position:relative;overflow:hidden"><div class="label">🏆 TOP PERFORMER</div><div id="top" class="value gold shine">—</div><div id="topTrend" class="muted" style="margin-top:6px;font-size:12px"></div><div id="topRunnerUps" class="runner-ups"></div></div></section><div id="reminderBanner" class="hidden flash" style="margin:16px 0;background:#fff4d6;color:#7a5b12;border:1px solid #e8c477"></div><section class="panel" id="miniChart"><h2>📊 Last 7 Days</h2><div id="miniChartBars" style="display:flex;align-items:flex-end;gap:10px;height:120px;padding-top:10px"></div></section>
+<section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note"></textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
 <section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>Top 5</h2><div id="top5"></div></div></div></section>
 <section id="adminPanel" class="panel hidden" style="border:1px solid rgba(26,155,104,.35)">
 <h2>👑 Admin Control Center</h2>
@@ -71,7 +71,7 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <div><label>&nbsp;</label><button id="adminMonthlyExcelBtn" class="btn primary">📊 Generate Monthly Excel</button></div>
 </div>
 <p class="muted">Admin can add, edit and delete all employee records without the one-entry-per-day limit.</p>
-</section><section class="panel" id="records"><h2>Saved Records</h2><div class="tablewrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error Type</th><th>Notes</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div></section>
+</section><section class="panel" id="records"><h2>Saved Records</h2><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px"><input id="recordsSearch" type="text" placeholder="🔍 Search employee name..." style="flex:1;min-width:180px"><input id="recordsFrom" type="date" title="From date"><input id="recordsTo" type="date" title="To date"><button id="recordsClearFilter" class="btn">Clear</button></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error Type</th><th>Notes</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div></section>
 </main></div>
 <script src="config.js"></script>
 <script>
@@ -113,7 +113,7 @@ function showApp(){
 }
 async function loadData(){
  $('today').textContent=isoToday();
- $('workDate').value=isoToday();
+ $('workDate').value=userRole()==='employee'?addDays(isoToday(),-1):isoToday();
  $('reportDate').value=isoToday();
 
  const {data:ps,error:pe}=await sb.from('profiles').select('id,full_name,department,role').order('full_name');
@@ -135,6 +135,7 @@ async function loadData(){
  fillEmployees();
  renderRecords();
  renderReport();
+ renderPersonalInsights();
  updateDailyEntryState();
 
  if(userRole()==='employee'){
@@ -156,11 +157,61 @@ function fillEmployees(){
 }
 function renderRecords(){
  const map=Object.fromEntries(profiles.map(p=>[p.id,p]));
- $('recordsBody').innerHTML=records.map(r=>{
+ const q=($('recordsSearch')?.value||'').trim().toLowerCase();
+ const from=$('recordsFrom')?.value||'';
+ const to=$('recordsTo')?.value||'';
+ const filtered=records.filter(r=>{
+   const name=(map[r.employee_id]?.full_name||'').toLowerCase();
+   if(q&&!name.includes(q))return false;
+   if(from&&r.work_date<from)return false;
+   if(to&&r.work_date>to)return false;
+   return true;
+ });
+ $('recordsBody').innerHTML=filtered.map(r=>{
    const p=map[r.employee_id]||{};
    const actions=isAdmin()?'<button class="btn" onclick="editRecord(\''+r.id+'\')">Edit</button> <button class="btn danger" onclick="deleteRecord(\''+r.id+'\')">Delete</button>':'';
    return '<tr><td>'+r.work_date+'</td><td><b>'+esc(p.full_name||'Unknown')+'</b></td><td>'+esc(p.department||'')+'</td><td>'+r.items+'</td><td>'+r.errors+'</td><td>'+esc(r.error_type)+'</td><td>'+esc(r.notes)+'</td><td>'+actions+'</td></tr>';
- }).join('')||'<tr><td colspan="8" class="muted">No records yet.</td></tr>'
+ }).join('')||'<tr><td colspan="8" class="muted">No records match.</td></tr>'
+}
+if($('recordsSearch')){
+ $('recordsSearch').oninput=renderRecords;
+ $('recordsFrom').onchange=renderRecords;
+ $('recordsTo').onchange=renderRecords;
+ $('recordsClearFilter').onclick=()=>{$('recordsSearch').value='';$('recordsFrom').value='';$('recordsTo').value='';renderRecords()};
+}
+function renderPersonalInsights(){
+ const refDate=userRole()==='employee'?addDays(isoToday(),-1):isoToday();
+ const mine=records.filter(r=>r.employee_id===currentUser.id);
+ const mySet=new Set(mine.map(r=>r.work_date));
+
+ let streak=0,d=refDate;
+ const myErrByDate={};mine.forEach(r=>{myErrByDate[r.work_date]=(myErrByDate[r.work_date]||0)+Number(r.errors||0)});
+ while(mySet.has(d)&&(myErrByDate[d]||0)===0){streak++;d=addDays(d,-1);}
+ const streakBadge=streak>0?' &nbsp; <span style="color:#f0cf5e;font-weight:800">🔥 '+streak+'-day clean streak</span>':'';
+ $('userBox').innerHTML='<b>'+esc(currentProfile.full_name)+'</b><br>'+esc(currentProfile.department)+'<br>'+esc(userRole().toUpperCase())+streakBadge;
+
+ if(userRole()==='employee'){
+   if(mySet.has(refDate)){
+     $('reminderBanner').classList.add('hidden');
+   }else{
+     $('reminderBanner').classList.remove('hidden');
+     $('reminderBanner').innerHTML='⏰ You haven\'t submitted your KPI for <b>'+refDate+'</b> yet — don\'t forget today\'s entry!';
+   }
+ }else{
+   $('reminderBanner').classList.add('hidden');
+ }
+
+ const byDay={};
+ records.forEach(r=>{byDay[r.work_date]=(byDay[r.work_date]||0)+Number(r.items||0)});
+ const days=[];
+ for(let i=6;i>=0;i--)days.push(addDays(refDate,-i));
+ const maxVal=Math.max(1,...days.map(d=>byDay[d]||0));
+ $('miniChartBars').innerHTML=days.map(d=>{
+   const v=byDay[d]||0;
+   const h=Math.max(4,Math.round((v/maxVal)*90));
+   const lbl=d.slice(5);
+   return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><div class="muted" style="font-size:11px">'+v+'</div><div style="width:100%;max-width:34px;height:'+h+'px;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#32c47e,#1a9b68)"></div><div class="muted" style="font-size:10px">'+lbl+'</div></div>';
+ }).join('');
 }
 async function renderReport(){
  const chosen=$('reportDate').value||isoToday();
@@ -249,7 +300,7 @@ $('saveBtn').onclick=async()=>{
  if(!isAdmin()&&records.some(r=>r.work_date===work_date&&r.employee_id===employee_id)){msg('Only one KPI entry is allowed per employee per day.');updateDailyEntryState();return}
  const {error}=await sb.from('kpi_records').insert({work_date,employee_id,items,errors,error_type,notes,created_by:currentUser.id});
  if(error){if(error.code==='23505'||String(error.message).toLowerCase().includes('duplicate'))msg('This employee already has a KPI entry for this day.');else msg(error.message);updateDailyEntryState();return}
- $('items').value=0;$('errors').value=0;msg(isAdmin()?'KPI saved successfully.':'Thanks For Today');await loadData();
+ $('items').value=0;$('errors').value=0;$('notes').value='';msg(isAdmin()?'KPI saved successfully.':'Thanks For Today');await loadData();
 };
 $('workDate').onchange=updateDailyEntryState;$('employee').onchange=updateDailyEntryState;
 async function editRecord(id){
