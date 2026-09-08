@@ -62,9 +62,9 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <aside class="side"><div class="logo"><img src="dalare-logo.png" alt="DALARE Warehouse" class="side-logo"><div class="side-logo-text"><span>KPI</span> CASHIER</div></div><div id="userBox" class="userbox"></div><a class="active" href="#dashboard">▣ Dashboard</a><a href="#entry">▤ Data Entry</a><a href="#reports">◫ Reports</a><a href="#records">☷ Records</a><button id="logoutBtn">↪ Logout</button></aside>
 <main class="main" id="dashboard"><div class="head"><div class="brand-title"><div class="store">Dalare Warehouse</div><h1>KPI CASHIER</h1><div class="tm">TM-Dawan Ismahil Qader</div><div class="muted"></div></div><div class="toolbar"><button id="exportBtn" class="btn primary hidden">Export to Excel</button><button id="monthlyExcelBtn" class="btn primary hidden">📊 Monthly Excel</button><div id="today" class="muted"></div></div></div>
 <div id="flash" class="flash hidden"></div>
-<section class="cards"><div class="card glow-brand"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card glow-green"><div class="label">TEAM ITEMS</div><div id="acc" class="value green">0</div><div id="accSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card glow-red"><div class="label">TEAM ERRORS</div><div id="errs" class="value red">0</div><div id="errsSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card top-card" style="position:relative;overflow:hidden"><div class="label">🏆 TOP PERFORMER</div><div id="top" class="value gold shine">—</div><div id="topTrend" class="muted" style="margin-top:6px;font-size:12px"></div><div id="topRunnerUps" class="runner-ups"></div></div></section><div id="reminderBanner" class="hidden flash" style="margin:16px 0;background:#fff4d6;color:#7a5b12;border:1px solid #e8c477"></div><section class="panel" id="miniChart"><h2>📊 Last 7 Days</h2><div id="miniChartBars" style="display:flex;align-items:flex-end;gap:10px;height:120px;padding-top:10px"></div></section><section class="panel" id="streakBoard"><h2>🔥 Streak Leaderboard</h2><div id="streakBoardBody" class="top5-box"></div></section>
+<section class="cards"><div class="card glow-brand"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card glow-green"><div class="label">TEAM ITEMS</div><div id="acc" class="value green">0</div><div id="accSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card glow-red"><div class="label">TEAM ERRORS</div><div id="errs" class="value red">0</div><div id="errsSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card top-card" style="position:relative;overflow:hidden"><div class="label">🏆 TOP PERFORMER</div><div id="top" class="value gold shine">—</div><div id="topTrend" class="muted" style="margin-top:6px;font-size:12px"></div><div id="topRunnerUps" class="runner-ups"></div></div></section><div id="reminderBanner" class="hidden flash" style="margin:16px 0;background:#fff4d6;color:#7a5b12;border:1px solid #e8c477"></div><section class="panel" id="miniChart"><h2>📊 Last 7 Days</h2><div id="miniChartBars" style="display:flex;align-items:flex-end;gap:10px;height:120px;padding-top:10px"></div></section>
 <section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note"></textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
-<section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>Top 5</h2><div id="top5" class="top5-box"></div></div></div></section>
+<section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>🔥 Streaks</h2><div id="top5" class="top5-box"></div></div></div></section>
 <section id="adminPanel" class="panel hidden" style="border:1px solid rgba(26,155,104,.35)">
 <h2>👑 Admin Control Center</h2>
 <div class="formgrid">
@@ -214,15 +214,6 @@ function renderPersonalInsights(){
    const lbl=d.slice(5);
    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><div class="muted" style="font-size:11px">'+v+'</div><div style="width:100%;max-width:34px;height:'+h+'px;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#32c47e,#1a9b68)"></div><div class="muted" style="font-size:10px">'+lbl+'</div></div>';
  }).join('');
-
- sb.rpc('team_streaks',{p_ref:refDate}).then(({data,error})=>{
-   if(error||!data){$('streakBoardBody').innerHTML='<div class="muted">Streak leaderboard unavailable.</div>';return}
-   const board=data.map(x=>({id:x.employee_id,name:x.full_name,streak:Number(x.streak||0)})).sort((a,b)=>b.streak-a.streak);
-   $('streakBoardBody').innerHTML=board.map((x,i)=>{
-     const mine=x.id===currentUser.id;
-     return '<div class="rank"><b>'+(i+1)+'</b><strong style="flex:1">'+esc(x.name)+(mine?' <span class="muted" style="font-weight:400;font-size:12px">(you)</span>':'')+'</strong><span>'+(x.streak>0?'🔥 '+x.streak+' days':'—')+'</span></div>';
-   }).join('')||'<div class="top5-empty"><div style="font-size:38px">🔥</div><div style="font-weight:700;color:var(--text)">No streaks yet</div><div style="font-size:12px;max-width:220px">Clean, error-free days in a row will show up here.</div></div>';
- });
 }
 async function renderReport(){
  const chosen=$('reportDate').value||isoToday();
@@ -275,9 +266,15 @@ async function renderReport(){
  '<tr><td>'+(i+1)+'</td><td><b>'+esc(x.full_name)+'</b></td><td>'+esc(x.department)+'</td><td>'+x.items.toLocaleString()+'</td><td>'+x.errors+'</td><td>'+x.error_pct.toFixed(2)+'%</td><td><b>'+x.accuracy.toFixed(1)+'%</b> '+(x.items?'<span class="badge '+(x.accuracy<95?'red':'')+'">'+(x.accuracy>=98?'Excellent':x.accuracy>=95?'Good':'Needs Review')+'</span>':'')+'</td></tr>'
  ).join('');
 
- $('top5').innerHTML=ranked.slice(0,5).map((x,i)=>
- '<div class="rank"><b>'+(i+1)+'</b><strong style="flex:1">'+esc(x.full_name)+'</strong><span>'+x.accuracy.toFixed(1)+'%</span></div>'
- ).join('')||'<div class="top5-empty"><div style="font-size:38px">📭</div><div style="font-weight:700;color:var(--text)">No KPI data yet</div><div style="font-size:12px;max-width:220px">Once someone logs an entry for this period, the leaderboard shows up here.</div></div>';
+ $('top5').innerHTML='<div class="muted" style="padding:14px">Loading streaks…</div>';
+ sb.rpc('team_streaks',{p_ref:end}).then(({data,error})=>{
+   if(error||!data){$('top5').innerHTML='<div class="top5-empty">Streaks unavailable.</div>';return}
+   const board=data.map(x=>({id:x.employee_id,name:x.full_name,streak:Number(x.streak||0)})).sort((a,b)=>b.streak-a.streak);
+   $('top5').innerHTML=board.map((x,i)=>{
+     const mine=x.id===currentUser.id;
+     return '<div class="rank"><b>'+(i+1)+'</b><strong style="flex:1">'+esc(x.name)+(mine?' <span class="muted" style="font-weight:400;font-size:12px">(you)</span>':'')+'</strong><span>'+(x.streak>0?'🔥 '+x.streak+' days':'—')+'</span></div>';
+   }).join('')||'<div class="top5-empty"><div style="font-size:38px">🔥</div><div style="font-weight:700;color:var(--text)">No streaks yet</div><div style="font-size:12px;max-width:220px">Clean, error-free days in a row will show up here.</div></div>';
+ });
 }
 $('exportBtn').onclick=()=>{
  if(!isAdmin()){msg('Only Admin can export data to Excel.');return}
