@@ -219,9 +219,8 @@ function renderPersonalInsights(){
    if(error||!data){$('streakBoardBody').innerHTML='<div class="muted">Streak leaderboard unavailable.</div>';return}
    const board=data.map(x=>({id:x.employee_id,name:x.full_name,streak:Number(x.streak||0)})).sort((a,b)=>b.streak-a.streak);
    $('streakBoardBody').innerHTML=board.map((x,i)=>{
-     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
      const mine=x.id===currentUser.id;
-     return '<div class="rank" style="'+(mine?'background:#173f30;border-radius:8px;padding:8px 10px':'')+'"><b>'+medal+'</b><div style="flex:1">'+esc(x.name)+(mine?' <span class="muted">(you)</span>':'')+'</div><div style="font-weight:800;color:'+(x.streak>0?'#f0cf5e':'var(--muted)')+'">'+(x.streak>0?'🔥 '+x.streak+' days':'—')+'</div></div>';
+     return '<div class="rank"><b>'+(i+1)+'</b><strong style="flex:1">'+esc(x.name)+(mine?' <span class="muted" style="font-weight:400;font-size:12px">(you)</span>':'')+'</strong><span>'+(x.streak>0?'🔥 '+x.streak+' days':'—')+'</span></div>';
    }).join('')||'<div class="top5-empty"><div style="font-size:38px">🔥</div><div style="font-weight:700;color:var(--text)">No streaks yet</div><div style="font-size:12px;max-width:220px">Clean, error-free days in a row will show up here.</div></div>';
  });
 }
