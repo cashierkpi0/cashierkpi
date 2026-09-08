@@ -26,6 +26,15 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 .runner-ups .ru b{color:var(--text);font-weight:700;font-size:13px}
 .rank{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.rank b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#e8f7f0;color:#19885d}
 .top5-box{min-height:260px;display:flex;flex-direction:column;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:6px 14px}
+.streak-box{animation:streakGlow 2.8s ease-in-out infinite}
+@keyframes streakGlow{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 1px rgba(240,148,55,.28),0 16px 40px rgba(240,148,55,.18)}}
+.rank.hot{background:linear-gradient(90deg,rgba(240,148,55,.14),transparent)}
+.rank .medal-1{background:linear-gradient(160deg,#f7d873,#c99a2e)!important;color:#3a2a05!important}
+.rank .medal-2{background:linear-gradient(160deg,#e4e8ec,#a9b2bb)!important;color:#2b3236!important}
+.rank .medal-3{background:linear-gradient(160deg,#e3a874,#a9652f)!important;color:#3a1f0a!important}
+.flame-val{font-weight:800;color:#f0cf5e;display:inline-flex;align-items:center;gap:4px}
+.flame-val .emoji{display:inline-block;animation:flicker 1.1s ease-in-out infinite}
+@keyframes flicker{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.15) rotate(2deg)}}
 .top5-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);text-align:center;padding:24px}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.toolbar input{width:160px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text)}.flash{background:#fff3df;color:#956b16;padding:10px;border-radius:8px;margin-bottom:15px}.userbox{font-size:12px;color:#d9eee6;margin:12px 8px 20px}.admin-only{display:none}.app-theme{position:fixed;right:25px;top:18px;z-index:10}
 
 /* Premium 3D login enhancements */
@@ -64,7 +73,7 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <div id="flash" class="flash hidden"></div>
 <section class="cards"><div class="card glow-brand"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card glow-green"><div class="label">TEAM ITEMS</div><div id="acc" class="value green">0</div><div id="accSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card glow-red"><div class="label">TEAM ERRORS</div><div id="errs" class="value red">0</div><div id="errsSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card top-card" style="position:relative;overflow:hidden"><div class="label">🏆 TOP PERFORMER</div><div id="top" class="value gold shine">—</div><div id="topTrend" class="muted" style="margin-top:6px;font-size:12px"></div><div id="topRunnerUps" class="runner-ups"></div></div></section><div id="reminderBanner" class="hidden flash" style="margin:16px 0;background:#fff4d6;color:#7a5b12;border:1px solid #e8c477"></div><section class="panel" id="miniChart"><h2>📊 Last 7 Days</h2><div id="miniChartBars" style="display:flex;align-items:flex-end;gap:10px;height:120px;padding-top:10px"></div></section>
 <section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note"></textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
-<section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>🔥 Streaks</h2><div id="top5" class="top5-box"></div></div></div></section>
+<section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>🔥 Streaks</h2><div id="top5" class="top5-box streak-box"></div></div></div></section>
 <section id="adminPanel" class="panel hidden" style="border:1px solid rgba(26,155,104,.35)">
 <h2>👑 Admin Control Center</h2>
 <div class="formgrid">
@@ -272,7 +281,9 @@ async function renderReport(){
    const board=data.map(x=>({id:x.employee_id,name:x.full_name,streak:Number(x.streak||0)})).sort((a,b)=>b.streak-a.streak);
    $('top5').innerHTML=board.map((x,i)=>{
      const mine=x.id===currentUser.id;
-     return '<div class="rank"><b>'+(i+1)+'</b><strong style="flex:1">'+esc(x.name)+(mine?' <span class="muted" style="font-weight:400;font-size:12px">(you)</span>':'')+'</strong><span>'+(x.streak>0?'🔥 '+x.streak+' days':'—')+'</span></div>';
+     const medalClass=i===0?'medal-1':i===1?'medal-2':i===2?'medal-3':'';
+     const valueHtml=x.streak>0?'<span class="flame-val"><span class="emoji">🔥</span>'+x.streak+' days</span>':'<span class="muted">—</span>';
+     return '<div class="rank'+(x.streak>0?' hot':'')+'"><b class="'+medalClass+'">'+(i+1)+'</b><strong style="flex:1">'+esc(x.name)+(mine?' <span class="muted" style="font-weight:400;font-size:12px">(you)</span>':'')+'</strong>'+valueHtml+'</div>';
    }).join('')||'<div class="top5-empty"><div style="font-size:38px">🔥</div><div style="font-weight:700;color:var(--text)">No streaks yet</div><div style="font-size:12px;max-width:220px">Clean, error-free days in a row will show up here.</div></div>';
  });
 }
