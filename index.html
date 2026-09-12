@@ -345,7 +345,7 @@ async function editRecord(id){
 window.editRecord=editRecord;
 async function deleteRecord(id){if(!isAdmin()){msg('Only Admin can delete records.');return}if(!confirm('Delete this record?'))return;const {data:deleted,error}=await sb.from('kpi_records').delete().eq('id',id).select('id');if(error){msg('Delete failed: '+error.message);return}if(!deleted||!deleted.length){msg('Delete was blocked by Supabase permissions. Run the V9 SQL patch once.');return}msg('Record deleted.');await loadData()};window.deleteRecord=deleteRecord;
 
-function cashierProfiles(){return profiles.filter(p=>{const r=String(p.role||'').trim().toLowerCase();const d=String(p.department||'').trim().toLowerCase();return r!=='admin'&&d!=='driver'})}
+function cashierProfiles(){return profiles.filter(p=>{const r=String(p.role||'').trim().toLowerCase();const d=String(p.department||'').trim().toLowerCase();return r!=='admin'&&d!=='driver'&&d!=='transet'})}
 function buildDailyReportSheet(dateStr){
  const dayRecords=records.filter(r=>r.work_date===dateStr);
  const byEmp=Object.fromEntries(dayRecords.map(r=>[r.employee_id,r]));
