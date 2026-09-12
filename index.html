@@ -102,6 +102,8 @@ const savedTheme=localStorage.getItem('kpi-theme')||'dark';setTheme(savedTheme);
 $('darkBtn').onclick=()=>setTheme('dark');$('lightBtn').onclick=()=>setTheme('light');$('appDarkBtn').onclick=()=>setTheme('dark');$('appLightBtn').onclick=()=>setTheme('light');
 $('togglePassword').onclick=()=>{const p=$('password');p.type=p.type==='password'?'text':'password'};
 function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)}
+function isFriday(d){return new Date(d+'T00:00:00').getDay()===5}
+function skipFriday(d){let x=d;while(isFriday(x))x=addDays(x,-1);return x}
 // Business week: Saturday -> Friday
 function rangeFor(p,chosen){const d=localDate(chosen);if(p==='daily')return [chosen,chosen];if(p==='weekly'){const day=d.getDay();const daysFromSat=(day+1)%7;const start=addDays(d,-daysFromSat);return [start,addDays(localDate(start),6)]}const start=chosen.slice(0,8)+'01';const next=new Date(localDate(start));next.setMonth(next.getMonth()+1);return [start,addDays(next,-1)]}
 async function init(){
@@ -124,7 +126,7 @@ function showApp(){
 }
 async function loadData(){
  $('today').textContent=isoToday();
- $('workDate').value=userRole()==='employee'?addDays(isoToday(),-1):isoToday();
+ $('workDate').value=userRole()==='employee'?skipFriday(addDays(isoToday(),-1)):isoToday();
  $('reportDate').value=isoToday();
 
  const {data:ps,error:pe}=await sb.from('profiles').select('id,full_name,department,role').order('full_name');
@@ -227,46 +229,54 @@ function renderPersonalInsights(){
 async function renderReport(){
  const chosen=$('reportDate').value||isoToday();
  const [start,end]=rangeFor(period,chosen);
- let rows;
+ let rows,allRows;
  if(isAdmin()){
-   rows=cashierProfiles().map(p=>{
-     const rr=records.filter(r=>r.employee_id===p.id&&r.work_date>=start&&r.work_date<=end);
+   const build=(from,to)=>cashierProfiles().map(p=>{
+     const rr=records.filter(r=>r.employee_id===p.id&&r.work_date>=from&&r.work_date<=to);
      const items=rr.reduce((a,r)=>a+Number(r.items||0),0);
      const errors=rr.reduce((a,r)=>a+Number(r.errors||0),0);
      return {...p,items,errors,error_pct:items?errors/items*100:0,accuracy:items?(items-errors)/items*100:0};
    });
+   rows=build(start,end);
+   allRows=build('2000-01-01',isoToday());
  }else{
-   const {data,error}=await sb.rpc('team_leaderboard',{p_start:start,p_end:end});
-   if(error){msg('Report: '+error.message);rows=[]}
-   else rows=(data||[]).map(x=>{
-     const items=Number(x.items||0),errors=Number(x.errors||0);
-     return {id:x.employee_id,full_name:x.full_name,department:x.department,items,errors,error_pct:items?errors/items*100:0,accuracy:items?(items-errors)/items*100:0};
-   });
+   const fetchRange=async(from,to)=>{
+     const {data,error}=await sb.rpc('team_leaderboard',{p_start:from,p_end:to});
+     if(error){msg('Report: '+error.message);return[]}
+     return(data||[]).map(x=>{
+       const items=Number(x.items||0),errors=Number(x.errors||0);
+       return{id:x.employee_id,full_name:x.full_name,department:x.department,items,errors,error_pct:items?errors/items*100:0,accuracy:items?(items-errors)/items*100:0};
+     });
+   };
+   [rows,allRows]=await Promise.all([fetchRange(start,end),fetchRange('2000-01-01',isoToday())]);
  }
  const ranked=rows.filter(x=>x.items>0).sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items);
+ const allRanked=allRows.filter(x=>x.items>0).sort((a,b)=>b.accuracy-a.accuracy||b.items-a.items);
+ const board=ranked.length?ranked:allRanked;
  const ti=rows.reduce((a,r)=>a+r.items,0),te=rows.reduce((a,r)=>a+r.errors,0);
+ const allTi=allRows.reduce((a,r)=>a+r.items,0),allTe=allRows.reduce((a,r)=>a+r.errors,0);
  const myRow=rows.find(r=>r.id===currentUser.id);
  $('acc').textContent=ti.toLocaleString();
- $('accSub').textContent=myRow?'Your items: '+myRow.items.toLocaleString()+' • '+myRow.accuracy.toFixed(1)+'% accuracy':'';
+ $('accSub').textContent='All-time: '+allTi.toLocaleString()+(myRow?' • You: '+myRow.items.toLocaleString():'');
  $('errs').textContent=te;
- $('errsSub').textContent=myRow?'Your errors: '+myRow.errors:'';
- $('top').textContent=ranked[0]?ranked[0].full_name.split(' ')[0]:'—';
+ $('errsSub').textContent='All-time: '+allTe.toLocaleString()+(myRow?' • You: '+myRow.errors:'');
+ $('top').textContent=board[0]?board[0].full_name.split(' ')[0]:'—';
  $('meta').textContent=period.toUpperCase()+' • '+start+' → '+end+' • '+ti.toLocaleString()+' items';
 
- if(ranked[0]&&period==='daily'&&ranked[0].id===currentUser.id){
+ if(board[0]&&ranked.length&&period==='daily'&&board[0].id===currentUser.id){
    const prev=addDays(chosen,-1);
-   const prevItems=records.filter(r=>r.employee_id===ranked[0].id&&r.work_date===prev).reduce((a,r)=>a+Number(r.items||0),0);
-   const diff=ranked[0].items-prevItems;
+   const prevItems=records.filter(r=>r.employee_id===board[0].id&&r.work_date===prev).reduce((a,r)=>a+Number(r.items||0),0);
+   const diff=board[0].items-prevItems;
    $('topTrend').innerHTML=prevItems===0?'<span style="color:#bd9225;font-weight:800">🏆 Top Performer today</span>':
      diff>0?'<span style="color:#1a9b68;font-weight:800">▲ '+diff.toLocaleString()+' items vs yesterday</span>':
      diff<0?'<span style="color:#d85b5b;font-weight:800">▼ '+Math.abs(diff).toLocaleString()+' items vs yesterday</span>':
      '<span style="color:#bd9225;font-weight:800">＝ Same as yesterday</span>';
- }else if(ranked[0]&&$('topTrend')){
-   $('topTrend').innerHTML='<span style="color:#bd9225;font-weight:800">🏆 Team Top Performer</span>';
+ }else if(board[0]&&$('topTrend')){
+   $('topTrend').innerHTML=ranked.length?'<span style="color:#bd9225;font-weight:800">🏆 Team Top Performer</span>':'<span style="color:#bd9225;font-weight:800">🏆 All-time Top Performer</span>';
  }else if($('topTrend')) $('topTrend').textContent='';
 
  if($('topRunnerUps')){
-   $('topRunnerUps').innerHTML=[ranked[1],ranked[2]].filter(Boolean).map((x,i)=>
+   $('topRunnerUps').innerHTML=[board[1],board[2]].filter(Boolean).map((x,i)=>
      '<div class="ru"><span>'+(i===0?'🥈':'🥉')+' '+esc(x.full_name)+'</span><b>'+x.accuracy.toFixed(1)+'%</b></div>'
    ).join('');
  }
@@ -321,7 +331,8 @@ $('saveBtn').onclick=async()=>{
  if(error){if(error.code==='23505'||String(error.message).toLowerCase().includes('duplicate'))msg('This employee already has a KPI entry for this day.');else msg(error.message);updateDailyEntryState();return}
  $('items').value=0;$('errors').value=0;$('notes').value='';msg(isAdmin()?'KPI saved successfully.':'Thanks For Today');await loadData();
 };
-$('workDate').onchange=updateDailyEntryState;$('employee').onchange=updateDailyEntryState;
+$('workDate').onchange=()=>{if(isFriday($('workDate').value)){msg('Friday is a day off — date adjusted to the last working day.');$('workDate').value=skipFriday(addDays($('workDate').value,-1))}updateDailyEntryState()};
+$('employee').onchange=updateDailyEntryState;
 async function editRecord(id){
  if(!isAdmin()){msg('Only Admin can edit records.');return}
  const r=records.find(x=>x.id===id);if(!r)return;
