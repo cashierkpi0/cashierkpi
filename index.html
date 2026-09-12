@@ -126,7 +126,7 @@ function showApp(){
 }
 async function loadData(){
  $('today').textContent=isoToday();
- $('workDate').value=userRole()==='employee'?skipFriday(addDays(isoToday(),-1)):isoToday();
+ $('workDate').value=userRole()==='employee'?skipFriday(addDays(isoToday(),-1)):skipFriday(isoToday());
  $('reportDate').value=isoToday();
 
  const {data:ps,error:pe}=await sb.from('profiles').select('id,full_name,department,role').order('full_name');
@@ -318,6 +318,7 @@ function updateDailyEntryState(){const work_date=$('workDate').value,employee_id
 let editingId=null;
 $('saveBtn').onclick=async()=>{
  const work_date=$('workDate').value,employee_id=$('employee').value,items=Math.max(0,Number($('items').value||0)),errors=Math.max(0,Number($('errors').value||0)),error_type=$('errorType').value,notes=$('notes').value.trim();
+ if(isFriday(work_date)){msg('Fridays are a day off — KPI entries cannot be saved for a Friday.');$('workDate').value=skipFriday(addDays(work_date,-1));return}
  if(errors>items&&items>0){msg('Error points cannot be greater than items.');return}
  if(editingId){
    if(!isAdmin()){msg('Only Admin can edit records.');return}
