@@ -73,7 +73,7 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <div id="flash" class="flash hidden"></div>
 <section class="cards"><div class="card glow-brand"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card glow-green"><div class="label">TEAM ITEMS</div><div id="acc" class="value green">0</div><div id="accSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card glow-red"><div class="label">TEAM ERRORS</div><div id="errs" class="value red">0</div><div id="errsSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card top-card" style="position:relative;overflow:hidden"><div class="label">🏆 TOP PERFORMER</div><div id="top" class="value gold shine">—</div><div id="topTrend" class="muted" style="margin-top:6px;font-size:12px"></div><div id="topRunnerUps" class="runner-ups"></div></div></section><div id="reminderBanner" class="hidden flash" style="margin:16px 0;background:#fff4d6;color:#7a5b12;border:1px solid #e8c477"></div><section class="panel" id="miniChart"><h2>📊 Last 7 Days</h2><div id="miniChartBars" style="display:flex;align-items:flex-end;gap:10px;height:120px;padding-top:10px"></div></section>
 <section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note"></textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
-<section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>🔥 Streaks</h2><div id="top5" class="top5-box streak-box"></div></div></div></section>
+<section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><div id="customRangeBox" class="toolbar hidden admin-range" style="margin-top:-6px;margin-bottom:10px"><span class="muted" style="font-size:12px">Custom range (Admin):</span><input id="reportFrom" type="date" title="From"><span class="muted">→</span><input id="reportTo" type="date" title="To"><button id="reportRangeBtn" class="btn">Apply</button><button id="reportRangeClear" class="btn">Clear</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>🔥 Streaks</h2><div id="top5" class="top5-box streak-box"></div></div></div></section>
 <section id="adminPanel" class="panel hidden" style="border:1px solid rgba(26,155,104,.35)">
 <h2>👑 Admin Control Center</h2>
 <div class="formgrid">
@@ -88,7 +88,7 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <script>
 const { createClient } = supabase;
 const sb = createClient(window.SUPABASE_URL, window.SUPABASE_PUBLISHABLE_KEY);
-let currentUser=null,currentProfile=null,profiles=[],records=[],period='daily';
+let currentUser=null,currentProfile=null,profiles=[],records=[],period='daily',customRange=null;
 function userRole(){return String(currentProfile?.role||'').trim().toLowerCase()}
 function isAdmin(){return userRole().replace(/\s+/g,'')==='admin'}
 function isManager(){return userRole()==='manager'}
@@ -122,6 +122,7 @@ function showApp(){
  $('exportBtn')?.classList.toggle('hidden',!admin);
  $('monthlyExcelBtn')?.classList.toggle('hidden',!admin);
  $('adminPanel')?.classList.toggle('hidden',!admin);
+ $('customRangeBox')?.classList.toggle('hidden',!admin);
  if($('adminMonth')) $('adminMonth').value=isoToday().slice(0,7);
 }
 async function loadData(){
@@ -193,13 +194,13 @@ if($('recordsSearch')){
  $('recordsClearFilter').onclick=()=>{$('recordsSearch').value='';$('recordsFrom').value='';$('recordsTo').value='';renderRecords()};
 }
 function renderPersonalInsights(){
- const refDate=userRole()==='employee'?addDays(isoToday(),-1):isoToday();
+ const refDate=userRole()==='employee'?skipFriday(addDays(isoToday(),-1)):skipFriday(isoToday());
  const mine=records.filter(r=>r.employee_id===currentUser.id);
  const mySet=new Set(mine.map(r=>r.work_date));
 
  let streak=0,d=refDate;
  const myErrByDate={};mine.forEach(r=>{myErrByDate[r.work_date]=(myErrByDate[r.work_date]||0)+Number(r.errors||0)});
- while(mySet.has(d)&&(myErrByDate[d]||0)===0){streak++;d=addDays(d,-1);}
+ while(true){if(isFriday(d)){d=addDays(d,-1);continue}if(mySet.has(d)&&(myErrByDate[d]||0)===0){streak++;d=addDays(d,-1)}else break}
  const streakBadge=streak>0?' &nbsp; <span style="color:#f0cf5e;font-weight:800">🔥 '+streak+'-day clean streak</span>':'';
  $('userBox').innerHTML='<b>'+esc(currentProfile.full_name)+'</b><br>'+esc(currentProfile.department)+'<br>'+esc(userRole().toUpperCase())+streakBadge;
 
@@ -217,7 +218,7 @@ function renderPersonalInsights(){
  const byDay={};
  records.forEach(r=>{byDay[r.work_date]=(byDay[r.work_date]||0)+Number(r.items||0)});
  const days=[];
- for(let i=6;i>=0;i--)days.push(addDays(refDate,-i));
+ let dcursor=refDate;while(days.length<7){if(!isFriday(dcursor))days.unshift(dcursor);dcursor=addDays(dcursor,-1);}
  const maxVal=Math.max(1,...days.map(d=>byDay[d]||0));
  $('miniChartBars').innerHTML=days.map(d=>{
    const v=byDay[d]||0;
@@ -228,7 +229,7 @@ function renderPersonalInsights(){
 }
 async function renderReport(){
  const chosen=$('reportDate').value||isoToday();
- const [start,end]=rangeFor(period,chosen);
+ const [start,end]=customRange?customRange:rangeFor(period,chosen);
  let rows,allRows;
  if(isAdmin()){
    const build=(from,to)=>cashierProfiles().map(p=>{
@@ -261,7 +262,7 @@ async function renderReport(){
  $('errs').textContent=te;
  $('errsSub').textContent='All-time: '+allTe.toLocaleString()+(myRow?' • You: '+myRow.errors:'');
  $('top').textContent=board[0]?board[0].full_name.split(' ')[0]:'—';
- $('meta').textContent=period.toUpperCase()+' • '+start+' → '+end+' • '+ti.toLocaleString()+' items';
+ $('meta').textContent=(customRange?'CUSTOM':period.toUpperCase())+' • '+start+' → '+end+' • '+ti.toLocaleString()+' items';
 
  if(board[0]&&ranked.length&&period==='daily'&&board[0].id===currentUser.id){
    const prev=addDays(chosen,-1);
@@ -344,7 +345,7 @@ async function editRecord(id){
 window.editRecord=editRecord;
 async function deleteRecord(id){if(!isAdmin()){msg('Only Admin can delete records.');return}if(!confirm('Delete this record?'))return;const {data:deleted,error}=await sb.from('kpi_records').delete().eq('id',id).select('id');if(error){msg('Delete failed: '+error.message);return}if(!deleted||!deleted.length){msg('Delete was blocked by Supabase permissions. Run the V9 SQL patch once.');return}msg('Record deleted.');await loadData()};window.deleteRecord=deleteRecord;
 
-function cashierProfiles(){return profiles.filter(p=>String(p.role||'').trim().toLowerCase()!=='admin')}
+function cashierProfiles(){return profiles.filter(p=>{const r=String(p.role||'').trim().toLowerCase();const d=String(p.department||'').trim().toLowerCase();return r!=='admin'&&d!=='driver'})}
 function buildDailyReportSheet(dateStr){
  const dayRecords=records.filter(r=>r.work_date===dateStr);
  const byEmp=Object.fromEntries(dayRecords.map(r=>[r.employee_id,r]));
@@ -439,7 +440,18 @@ $('monthlyExcelBtn').onclick=generateMonthlyExcel;
 $('adminMonthlyExcelBtn').onclick=generateMonthlyExcel;
 $('clearMonthBtn').onclick=clearMonthlyData;
 
-$('reportDate').onchange=renderReport;document.querySelectorAll('.period').forEach(b=>b.onclick=()=>{document.querySelectorAll('.period').forEach(x=>x.classList.remove('active'));b.classList.add('active');period=b.dataset.period;renderReport()});
+$('reportDate').onchange=()=>{customRange=null;renderReport()};document.querySelectorAll('.period').forEach(b=>b.onclick=()=>{customRange=null;document.querySelectorAll('.period').forEach(x=>x.classList.remove('active'));b.classList.add('active');period=b.dataset.period;renderReport()});
+if($('reportRangeBtn')){
+ $('reportRangeBtn').onclick=()=>{
+   const f=$('reportFrom').value,t=$('reportTo').value;
+   if(!f||!t){msg('Pick both a From and To date.');return}
+   if(f>t){msg('The From date must be before the To date.');return}
+   customRange=[f,t];
+   document.querySelectorAll('.period').forEach(x=>x.classList.remove('active'));
+   renderReport();
+ };
+ $('reportRangeClear').onclick=()=>{customRange=null;$('reportFrom').value='';$('reportTo').value='';document.querySelector('.period[data-period="daily"]').classList.add('active');period='daily';renderReport()};
+}
 sb.auth.onAuthStateChange((_e)=>{});init();
 </script>
 <div id="KPI_CASHIER_BUILD" style="display:none">KPI_CASHIER_BUILD_2026_08_13_FINAL2</div></body></html>
