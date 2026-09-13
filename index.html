@@ -5,6 +5,13 @@
 <title>KPI CASHIER</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function(OneSignal){
+  await OneSignal.init({ appId: "aa2d5e65-75d8-4df5-8592-8ca4ef776649" });
+});
+</script>
 <style>
 :root{--bg:#f4f7f6;--surface:#fff;--surface2:#eef5f1;--text:#17352c;--muted:#789188;--line:#dce7e2;--green:#1a9b68;--green2:#32c47e;--shadow:0 18px 55px rgba(23,53,44,.12)}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}body.dark{--bg:#06100d;--surface:#0d1916;--surface2:#13231e;--text:#edf8f3;--muted:#9bb4aa;--line:#203b31;--shadow:0 22px 65px rgba(0,0,0,.4)}.hidden{display:none!important}
@@ -124,6 +131,16 @@ function showApp(){
  $('adminPanel')?.classList.toggle('hidden',!admin);
  $('customRangeBox')?.classList.toggle('hidden',!admin);
  if($('adminMonth')) $('adminMonth').value=isoToday().slice(0,7);
+ if(window.OneSignalDeferred){
+   OneSignalDeferred.push(async function(OneSignal){
+     try{
+       await OneSignal.login(currentUser.id);
+       if(OneSignal.Notifications.permission!==true){
+         await OneSignal.Notifications.requestPermission();
+       }
+     }catch(e){}
+   });
+ }
 }
 async function loadData(){
  $('today').textContent=isoToday();
