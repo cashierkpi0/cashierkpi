@@ -89,6 +89,7 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <div><label>&nbsp;</label><button id="adminMonthlyExcelBtn" class="btn primary">📊 Generate Monthly Excel</button></div>
 </div>
 <p class="muted">Admin can add, edit and delete all employee records without the one-entry-per-day limit.</p>
+<div style="margin-top:16px"><label>📢 Daily Notification Message <span class="muted" style="font-weight:400">(sent to everyone every day at 8:00 AM)</span></label><textarea id="dailyMessage" placeholder="e.g. Good morning! Please remember to log today's KPI." style="width:100%;min-height:70px"></textarea><button id="saveDailyMessageBtn" class="btn primary" style="margin-top:8px">💾 Save Message</button></div>
 </section><section class="panel" id="records"><h2>Saved Records</h2><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px"><input id="recordsSearch" type="text" placeholder="🔍 Search employee name..." style="flex:1;min-width:180px"><input id="recordsFrom" type="date" title="From date"><input id="recordsTo" type="date" title="To date"><button id="recordsClearFilter" class="btn">Clear</button></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error Type</th><th>Notes</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div></section>
 </main></div>
 <script src="config.js"></script>
@@ -130,6 +131,11 @@ function showApp(){
  $('monthlyExcelBtn')?.classList.toggle('hidden',!admin);
  $('adminPanel')?.classList.toggle('hidden',!admin);
  $('customRangeBox')?.classList.toggle('hidden',!admin);
+ if(admin&&$('dailyMessage')){
+   sb.from('daily_announcement').select('message').eq('id',1).single().then(({data})=>{
+     if(data) $('dailyMessage').value=data.message||'';
+   });
+ }
  if($('adminMonth')) $('adminMonth').value=isoToday().slice(0,7);
  if(window.OneSignalDeferred){
    OneSignalDeferred.push(async function(OneSignal){
@@ -458,6 +464,13 @@ async function clearMonthlyData(){
 $('monthlyExcelBtn').onclick=generateMonthlyExcel;
 $('adminMonthlyExcelBtn').onclick=generateMonthlyExcel;
 $('clearMonthBtn').onclick=clearMonthlyData;
+$('saveDailyMessageBtn').onclick=async()=>{
+ const message=$('dailyMessage').value.trim();
+ if(!message){msg('Write a message first.');return}
+ const {error}=await sb.from('daily_announcement').update({message}).eq('id',1);
+ if(error){msg('Save failed: '+error.message);return}
+ msg('Daily message saved.');
+};
 
 $('reportDate').onchange=()=>{customRange=null;renderReport()};document.querySelectorAll('.period').forEach(b=>b.onclick=()=>{customRange=null;document.querySelectorAll('.period').forEach(x=>x.classList.remove('active'));b.classList.add('active');period=b.dataset.period;renderReport()});
 if($('reportRangeBtn')){
