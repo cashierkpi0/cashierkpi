@@ -491,7 +491,7 @@ $('saveDailyMessageBtn').onclick=async()=>{
 };
 $('sendDailyNowBtn').onclick=async()=>{
  $('sendDailyNowBtn').disabled=true;
- const {error}=await sb.rpc('send_daily_notification_now');
+ const {error}=await sb.rpc('send_daily_notification_now',{});
  $('sendDailyNowBtn').disabled=false;
  if(error){msg('Send failed: '+error.message);return}
  msg('Notification sent.');
