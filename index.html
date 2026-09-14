@@ -89,7 +89,19 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <div><label>&nbsp;</label><button id="adminMonthlyExcelBtn" class="btn primary">📊 Generate Monthly Excel</button></div>
 </div>
 <p class="muted">Admin can add, edit and delete all employee records without the one-entry-per-day limit.</p>
-<div style="margin-top:16px"><label>📢 Daily Notification Message <span class="muted" style="font-weight:400">(sent to everyone every day at 8:00 AM)</span></label><textarea id="dailyMessage" placeholder="e.g. Good morning! Please remember to log today's KPI." style="width:100%;min-height:70px"></textarea><button id="saveDailyMessageBtn" class="btn primary" style="margin-top:8px">💾 Save Message</button></div>
+<div style="margin-top:16px"><label>📢 Daily Notification Message <span class="muted" style="font-weight:400">(sent automatically every day at the time below)</span></label><textarea id="dailyMessage" placeholder="e.g. Good morning! Please remember to log today's KPI." style="width:100%;min-height:70px"></textarea>
+
+<div class="formgrid" style="margin-top:10px">
+<div><label>Send time (daily)</label><input id="dailyTime" type="time" value="08:00"></div>
+<div class="wide"><label>OneSignal REST API Key <span class="muted" style="font-weight:400">(from onesignal.com → Settings → Keys &amp; IDs, set once)</span></label><input id="dailyKey" type="password" placeholder="Paste OneSignal REST API key"></div>
+</div>
+
+<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<button id="saveDailyMessageBtn" class="btn primary">💾 Save Message &amp; Schedule</button>
+<button id="sendDailyNowBtn" class="btn">📨 Send Now</button>
+<span id="dailyLastSent" class="muted" style="font-size:12px"></span>
+</div>
+</div>
 </section><section class="panel" id="records"><h2>Saved Records</h2><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px"><input id="recordsSearch" type="text" placeholder="🔍 Search employee name..." style="flex:1;min-width:180px"><input id="recordsFrom" type="date" title="From date"><input id="recordsTo" type="date" title="To date"><button id="recordsClearFilter" class="btn">Clear</button></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error Type</th><th>Notes</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div></section>
 </main></div>
 <script src="config.js"></script>
@@ -132,8 +144,12 @@ function showApp(){
  $('adminPanel')?.classList.toggle('hidden',!admin);
  $('customRangeBox')?.classList.toggle('hidden',!admin);
  if(admin&&$('dailyMessage')){
-   sb.from('daily_announcement').select('message').eq('id',1).single().then(({data})=>{
-     if(data) $('dailyMessage').value=data.message||'';
+   sb.from('daily_announcement').select('message,send_time,onesignal_rest_key,last_sent_date').eq('id',1).single().then(({data})=>{
+     if(!data)return;
+     $('dailyMessage').value=data.message||'';
+     if(data.send_time) $('dailyTime').value=String(data.send_time).slice(0,5);
+     if(data.onesignal_rest_key) $('dailyKey').value=data.onesignal_rest_key;
+     $('dailyLastSent').textContent=data.last_sent_date?('Last sent: '+data.last_sent_date):'Not sent yet';
    });
  }
  if($('adminMonth')) $('adminMonth').value=isoToday().slice(0,7);
@@ -466,10 +482,20 @@ $('adminMonthlyExcelBtn').onclick=generateMonthlyExcel;
 $('clearMonthBtn').onclick=clearMonthlyData;
 $('saveDailyMessageBtn').onclick=async()=>{
  const message=$('dailyMessage').value.trim();
+ const send_time=$('dailyTime').value||'08:00';
+ const onesignal_rest_key=$('dailyKey').value.trim();
  if(!message){msg('Write a message first.');return}
- const {error}=await sb.from('daily_announcement').update({message}).eq('id',1);
+ const {error}=await sb.from('daily_announcement').update({message,send_time,onesignal_rest_key}).eq('id',1);
  if(error){msg('Save failed: '+error.message);return}
- msg('Daily message saved.');
+ msg('Daily message and schedule saved.');
+};
+$('sendDailyNowBtn').onclick=async()=>{
+ $('sendDailyNowBtn').disabled=true;
+ const {error}=await sb.rpc('send_daily_notification_now');
+ $('sendDailyNowBtn').disabled=false;
+ if(error){msg('Send failed: '+error.message);return}
+ msg('Notification sent.');
+ $('dailyLastSent').textContent='Last sent: '+isoToday();
 };
 
 $('reportDate').onchange=()=>{customRange=null;renderReport()};document.querySelectorAll('.period').forEach(b=>b.onclick=()=>{customRange=null;document.querySelectorAll('.period').forEach(x=>x.classList.remove('active'));b.classList.add('active');period=b.dataset.period;renderReport()});
@@ -486,4 +512,4 @@ if($('reportRangeBtn')){
 }
 sb.auth.onAuthStateChange((_e)=>{});init();
 </script>
-<div id="KPI_CASHIER_BUILD" style="display:none">KPI_CASHIER_BUILD_2026_08_13_FINAL2</div></body></html>
+<div id="KPI_CASHIER_BUILD" style="display:none">KPI_CASHIER_BUILD_2026_09_14_NOTIFY1</div></body></html>
