@@ -78,7 +78,7 @@ button,input,select,textarea{font:inherit}.login{min-height:100vh;display:grid;p
 <aside class="side"><div class="logo"><img src="dalare-logo.png" alt="DALARE Warehouse" class="side-logo"><div class="side-logo-text"><span>KPI</span> CASHIER</div></div><div id="userBox" class="userbox"></div><a class="active" href="#dashboard">▣ Dashboard</a><a href="#entry">▤ Data Entry</a><a href="#reports">◫ Reports</a><a href="#records">☷ Records</a><button id="logoutBtn">↪ Logout</button></aside>
 <main class="main" id="dashboard"><div class="head"><div class="brand-title"><div class="store">Dalare Warehouse</div><h1>KPI CASHIER</h1><div class="tm">TM-Dawan Ismahil Qader</div><div class="muted"></div></div><div class="toolbar"><button id="exportBtn" class="btn primary hidden">Export to Excel</button><button id="monthlyExcelBtn" class="btn primary hidden">📊 Monthly Excel</button><div id="today" class="muted"></div></div></div>
 <div id="flash" class="flash hidden"></div>
-<section class="cards"><div class="card glow-brand"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card glow-green"><div class="label">TEAM ITEMS</div><div id="acc" class="value green">0</div><div id="accSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card glow-red"><div class="label">TEAM ERRORS</div><div id="errs" class="value red">0</div><div id="errsSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card top-card" style="position:relative;overflow:hidden"><div class="label">🏆 TOP PERFORMER</div><div id="top" class="value gold shine">—</div><div id="topStats" class="muted" style="margin-top:2px;font-size:12px"></div><div id="topTrend" class="muted" style="margin-top:6px;font-size:12px"></div><div id="topRunnerUps" class="runner-ups"></div></div></section><div id="reminderBanner" class="hidden flash" style="margin:16px 0;background:#fff4d6;color:#7a5b12;border:1px solid #e8c477"></div><section class="panel" id="miniChart"><h2>📊 Last 7 Days</h2><div id="miniChartBars" style="display:flex;align-items:flex-end;gap:10px;height:120px;padding-top:10px"></div></section>
+<section class="cards"><div class="card glow-brand"><div class="label">EMPLOYEES</div><div id="emp" class="value">0</div></div><div class="card glow-green"><div class="label">TEAM ITEMS</div><div id="acc" class="value green">0</div><div id="accSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card glow-red"><div class="label">TEAM ERRORS</div><div id="errs" class="value red">0</div><div id="errsSub" class="muted" style="margin-top:6px;font-size:12px"></div></div><div class="card top-card" style="position:relative;overflow:hidden"><div class="label">🏆 TOP PERFORMER</div><div id="top" class="value gold shine">—</div><div id="topStats" class="muted" style="margin-top:2px;font-size:12px"></div><div id="topTrend" class="muted" style="margin-top:6px;font-size:12px"></div><div id="topRunnerUps" class="runner-ups"></div></div></section><div id="reminderBanner" class="hidden flash" style="margin:16px 0;background:#fff4d6;color:#7a5b12;border:1px solid #e8c477"></div><div id="notifyBanner" class="hidden flash" style="margin:16px 0;background:#e8f7f0;color:#19885d;border:1px solid #9bd9bd;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>🔔 Turn on notifications so you don't miss daily KPI reminders.</span><button id="enableNotifyBtn" class="btn primary">Enable Notifications</button></div><section class="panel" id="miniChart"><h2>📊 Last 7 Days</h2><div id="miniChartBars" style="display:flex;align-items:flex-end;gap:10px;height:120px;padding-top:10px"></div></section>
 <section class="panel form" id="entry"><h2>Data Entry</h2><div class="formgrid"><div><label>Date</label><input id="workDate" type="date"></div><div><label>Employee</label><select id="employee"></select></div><div><label>Items</label><input id="items" type="number" min="0" value="0"></div><div><label>Error Points</label><input id="errors" type="number" min="0" value="0"></div><div><label>Error Type</label><select id="errorType"><option>Digital / Error</option><option>Right &amp; Wrong</option><option>Dispensing Error ⚠️</option></select></div><div class="wide"><label>Notes</label><textarea id="notes" placeholder="Optional note"></textarea></div><div><label>&nbsp;</label><button id="saveBtn" class="btn primary">+ Save KPI</button></div></div></section>
 <section class="panel" id="reports"><div class="toolbar"><h2 style="margin-right:auto">Automatic Report</h2><input id="reportDate" type="date"><button class="btn period active" data-period="daily">Daily</button><button class="btn period" data-period="weekly">Weekly</button><button class="btn period" data-period="monthly">Monthly</button></div><div id="customRangeBox" class="toolbar hidden admin-range" style="margin-top:-6px;margin-bottom:10px"><span class="muted" style="font-size:12px">Custom range (Admin):</span><input id="reportFrom" type="date" title="From"><span class="muted">→</span><input id="reportTo" type="date" title="To"><button id="reportRangeBtn" class="btn">Apply</button><button id="reportRangeClear" class="btn">Clear</button></div><p id="meta" class="muted"></p><div class="grid"><div class="tablewrap"><table><thead><tr><th>#</th><th>Employee</th><th>Department</th><th>Items</th><th>Errors</th><th>Error %</th><th>Accuracy</th></tr></thead><tbody id="reportBody"></tbody></table></div><div><h2>🔥 Streaks</h2><div id="top5" class="top5-box streak-box"></div></div></div></section>
 <section id="adminPanel" class="panel hidden" style="border:1px solid rgba(26,155,104,.35)">
@@ -157,8 +157,20 @@ function showApp(){
    OneSignalDeferred.push(async function(OneSignal){
      try{
        await OneSignal.login(currentUser.id);
-       if(OneSignal.Notifications.permission!==true){
-         await OneSignal.Notifications.requestPermission();
+       const granted=OneSignal.Notifications.permission===true;
+       if($('notifyBanner')) $('notifyBanner').classList.toggle('hidden',granted);
+       if($('enableNotifyBtn')){
+         $('enableNotifyBtn').onclick=async()=>{
+           try{
+             await OneSignal.Notifications.requestPermission();
+             if(OneSignal.Notifications.permission===true){
+               $('notifyBanner').classList.add('hidden');
+               msg('Notifications enabled.');
+             }else{
+               msg('Notifications were not allowed. Check your browser/site settings.');
+             }
+           }catch(e){msg('Could not request permission: '+e.message)}
+         };
        }
      }catch(e){}
    });
@@ -512,4 +524,4 @@ if($('reportRangeBtn')){
 }
 sb.auth.onAuthStateChange((_e)=>{});init();
 </script>
-<div id="KPI_CASHIER_BUILD" style="display:none">KPI_CASHIER_BUILD_2026_09_14_NOTIFY1</div></body></html>
+<div id="KPI_CASHIER_BUILD" style="display:none">KPI_CASHIER_BUILD_2026_09_14_NOTIFY2</div></body></html>
